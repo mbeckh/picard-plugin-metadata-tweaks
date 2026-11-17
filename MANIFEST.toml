@@ -1,0 +1,41 @@
+uuid = "7ea9851f-6fec-4a70-b776-675fae465c5e"
+name = "Metadata Tweaks"
+description = "Manage timestamps in the tagging workflow."
+api = ["3.0"]
+authors = ["Michael Beckh"]
+maintainers = ["Michael Beckh"]
+license = "Apache-2.0"
+license_url = "https://www.apache.org/licenses/LICENSE-2.0"
+long_description = """The plugins adds more tags, sets file times and provides a way for calculated tag values using a script executed even after manual changes in the UI.
+
+File creation and modification timestamps, relative directory name (to move target), filename with extension and file size are added to the meta data view.
+
+The plugin adds the following variables and ID3 tags:
+
+* category (TCAT)
+* encodingtime (TDEN)
+* taggingtime (TDTG)
+* produced (TPRO)
+* radiostationname (TRSN)
+* radiostationowner (TRSO)
+* ~reldirname
+* ~filename_and_extension
+
+A script can be configured to run after any meta data updates, even those made in the UI. This makes it possible to have the value of a tag calculated based on the values of other tags and keep that in sync even when the tags are updated in the UI.
+
+The plugin also adds three scripting functions:
+* $to_utc(date[, default]): Converts a date with optional time from local time to UTC.
+* $from_utc(date[, default]): Converts a date with optional time from UTC to local time.
+* $datediff(start, end[, unit=d]): Calculates the difference in local time between two dates.
+
+The plugin optionally manages file creation and modification times in the tagging workflow. File creation time is available on Windows only.
+
+The plugin also provides a way to set an updated modification timestamp (UTC) in a variable or tag. This variable or tag can then in turn be used to e.g. set the file timestamps.
+
+Finally, there is an option to encode a touch timestamp in the file creation and modification timestamps. When set, this adds sub-second data with resolution of 0.1s to the file times.
+"""
+categories = ["metadata", "scripting"]
+homepage = "https://github.com/mbeckh/picard-plugin-metadata-tweaks"
+report_bugs_to = "https://github.com/mbeckh/picard-plugin-metadata-tweaks/issues"
+min_python_version = "3.12"
+source_locale = "en"
