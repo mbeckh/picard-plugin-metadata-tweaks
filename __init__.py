@@ -49,8 +49,7 @@ from picard.util import (
     iter_files_from_objects,
 )
 
-from . import datefunctions, extra_tags, metadatabox, monkey
-from .options import MetadataTweaksOptionsPage
+from . import datefunctions, extra_tags, metadatabox, monkey, options
 
 
 if TYPE_CHECKING:
@@ -119,12 +118,15 @@ def _monkey_Metadata_compare_weighted(  # ruff: ignore[too-many-positional-argum
     """
     parts = wrapped(self, store_a, store_b, ignored, deleted_a, deleted_b, penalize_removed)
     if _enabled:
-        for name in ('~file_created_timestamp', '~file_modified_timestamp', '~reldirname', '~filename_and_extension'):
-            if name in store_a or name in store_b:
-                sa = store_a.get(name)
-                sb = store_b.get(name)
-                if sa != sb:
-                    parts.append((_changed_score(name, sa, sb), self._CHANGE_DEFAULT_WEIGHT))
+        plugin_config = _api.plugin_config
+        compare = plugin_config['variables_compare']
+        if compare:
+            for name in options.get_all_additional_variables():
+                if name in store_a or name in store_b:
+                    sa = store_a.get(name)
+                    sb = store_b.get(name)
+                    if sa != sb:
+                        parts.append((_changed_score(name, sa, sb), self._CHANGE_DEFAULT_WEIGHT))
 
     return parts
 
@@ -136,13 +138,10 @@ def _monkey_File_tags_to_update(
     """Yield additional names which are normally left out for comparison."""
     yield from wrapped(self, ignored_tags)
     if _enabled:
-        names = set(self.metadata) | set(self.orig_metadata)
-        yield from names & {
-            '~file_created_timestamp',
-            '~file_modified_timestamp',
-            '~reldirname',
-            '~filename_and_extension',
-        }
+        plugin_config = _api.plugin_config
+        compare = plugin_config['variables_compare']
+        if compare:
+            yield from options.get_all_additional_variables()
 
 
 def _save_file_times_to_metadata(metadata: Metadata | MultiMetadataProxy) -> None:
@@ -652,6 +651,7 @@ def enable(api: PluginApi) -> None:
     datefunctions.enable(api)
     extra_tags.enable(api)
     metadatabox.enable(api)
+    options.enable(api)
 
     api.plugin_config.register_option(
         'metadata_script',
@@ -710,10 +710,32 @@ def enable(api: PluginApi) -> None:
         in_profile=True,
     )
 
+    api.plugin_config.register_option(
+        'variables_show',
+        default=[
+            '~file_created_timestamp',
+            '~file_modified_timestamp',
+            '~filename_and_extension',
+            '~filesize',
+            '~reldirname',
+        ],
+        title=api.tr('options.variables_show', "Names of hidden variables to show in the metadata box"),
+        in_profile=True,
+    )
+
+    api.plugin_config.register_option(
+        'variables_compare',
+        default=False,
+        title=api.tr(
+            'options.variables_compare', "Differences in selected variables are considered changes of metadata"
+        ),
+        in_profile=True,
+    )
+
     api.register_file_post_load_processor(_file_post_load_processor, 100)
     api.register_file_post_save_processor(_file_post_save_processor, -100)
 
-    api.register_options_page(MetadataTweaksOptionsPage)
+    api.register_options_page(options.MetadataTweaksOptionsPage)
 
 
 def disable() -> None:
@@ -723,6 +745,7 @@ def disable() -> None:
     metadatabox.disable()
     extra_tags.disable()
     datefunctions.disable()
+    options.disable()
 
     monkey.unpatch_module(__name__)
 

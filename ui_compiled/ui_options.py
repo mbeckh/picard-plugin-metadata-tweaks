@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'ui\options.ui'
+# Form implementation generated from reading ui file '.\ui\options.ui'
 #
 # Created by: PyQt6 UI code generator 6.11.0
 #
@@ -12,13 +12,13 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_MetadataTweaksOptionsPage(object):
     def setupUi(self, MetadataTweaksOptionsPage):
         MetadataTweaksOptionsPage.setObjectName("MetadataTweaksOptionsPage")
-        MetadataTweaksOptionsPage.resize(340, 320)
+        MetadataTweaksOptionsPage.resize(340, 470)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(MetadataTweaksOptionsPage.sizePolicy().hasHeightForWidth())
         MetadataTweaksOptionsPage.setSizePolicy(sizePolicy)
-        MetadataTweaksOptionsPage.setMinimumSize(QtCore.QSize(200, 300))
+        MetadataTweaksOptionsPage.setMinimumSize(QtCore.QSize(200, 390))
         self.vboxlayout = QtWidgets.QVBoxLayout(MetadataTweaksOptionsPage)
         self.vboxlayout.setObjectName("vboxlayout")
         self.metadata_set_timestamp = QtWidgets.QCheckBox(parent=MetadataTweaksOptionsPage)
@@ -75,8 +75,25 @@ class Ui_MetadataTweaksOptionsPage(object):
         self.file_touch = QtWidgets.QCheckBox(parent=MetadataTweaksOptionsPage)
         self.file_touch.setObjectName("file_touch")
         self.vboxlayout.addWidget(self.file_touch)
-        spacerItem2 = QtWidgets.QSpacerItem(20, 0, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        spacerItem2 = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Preferred)
         self.vboxlayout.addItem(spacerItem2)
+        self.variables_show_label = QtWidgets.QLabel(parent=MetadataTweaksOptionsPage)
+        self.variables_show_label.setObjectName("variables_show_label")
+        self.vboxlayout.addWidget(self.variables_show_label)
+        self.variables_show = TagListEditor(parent=MetadataTweaksOptionsPage)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(1)
+        sizePolicy.setHeightForWidth(self.variables_show.sizePolicy().hasHeightForWidth())
+        self.variables_show.setSizePolicy(sizePolicy)
+        self.variables_show.setMinimumSize(QtCore.QSize(0, 60))
+        self.variables_show.setObjectName("variables_show")
+        self.vboxlayout.addWidget(self.variables_show)
+        self.variables_compare = QtWidgets.QCheckBox(parent=MetadataTweaksOptionsPage)
+        self.variables_compare.setObjectName("variables_compare")
+        self.vboxlayout.addWidget(self.variables_compare)
+        spacerItem3 = QtWidgets.QSpacerItem(20, 0, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        self.vboxlayout.addItem(spacerItem3)
 
         self.retranslateUi(MetadataTweaksOptionsPage)
         QtCore.QMetaObject.connectSlotsByName(MetadataTweaksOptionsPage)
@@ -89,3 +106,6 @@ class Ui_MetadataTweaksOptionsPage(object):
         self.file_set_created.setText(_translate("MetadataTweaksOptionsPage", "file_set_created.label"))
         self.file_set_modified.setText(_translate("MetadataTweaksOptionsPage", "file_set_modified.label"))
         self.file_touch.setText(_translate("MetadataTweaksOptionsPage", "file_touch.label"))
+        self.variables_show_label.setText(_translate("MetadataTweaksOptionsPage", "variables_show.label"))
+        self.variables_compare.setText(_translate("MetadataTweaksOptionsPage", "variables_compare.label"))
+from picard.ui.widgets.taglisteditor import TagListEditor

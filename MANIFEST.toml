@@ -8,7 +8,7 @@ license = "Apache-2.0"
 license_url = "https://www.apache.org/licenses/LICENSE-2.0"
 long_description = """The plugins adds more tags, sets file times and provides a way for calculated tag values using a script executed even after manual changes in the UI.
 
-File creation and modification timestamps, relative directory name (to move target), filename with extension and file size are added to the meta data view.
+A configurable set of normally hidden variables File can be added to the meta data view.
 
 The plugin adds the following variables and ID3 tags:
 

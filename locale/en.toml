@@ -32,6 +32,8 @@
 "options.metadata_set_timestamp" = "Set current tagging timestamp to metadata variable"
 "options.metadata_set_timestamp_to" = "Name of metadata variable for tagging timestamp"
 "options.file_touch" = "Encode update timestamp in file times for backup tools"
+"options.variables_show" = "Names of hidden variables to show in the metadata box"
+"options.variables_compare" = "Differences in selected variables are considered changes of metadata"
 
 "ui.metadata_tweaks.title" = "Metadata Tweaks"
 
@@ -41,6 +43,8 @@
 "qt.MetadataTweaksOptionsPage.file_set_created.label" = "Set file created date to value of tag:"
 "qt.MetadataTweaksOptionsPage.file_set_modified.label" = "Set file modified date to value of tag:"
 "qt.MetadataTweaksOptionsPage.file_touch.label" = "Touch file dates on save"
+"qt.MetadataTweaksOptionsPage.variables_show.label" = "Show these hidden variables in the UI:"
+"qt.MetadataTweaksOptionsPage.variables_compare.label" = "Differences in selected variables are considered changes"
 
 ["variable.filesize.format"]
 one = "{size:n} Byte"

@@ -14,8 +14,8 @@ tag values using a script executed even after manual changes in the UI.
 
 ### Variables and Tags
 
-File creation and modification timestamps, relative directory name (to move
-target), filename with extension and file size are added to the meta data view.
+A configurable set of normally hidden variables can be added to the meta data
+view.
 
 The plugin adds the following variables and ID3 tags:
 
