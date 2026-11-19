@@ -18,8 +18,8 @@ The plugin adds the following variables and ID3 tags:
 * produced (TPRO)
 * radiostationname (TRSN)
 * radiostationowner (TRSO)
-* ~reldirname
-* ~filename_and_extension
+* _reldirname
+* _filename_and_extension
 
 A script can be configured to run after any meta data updates, even those made in the UI. This makes it possible to have the value of a tag calculated based on the values of other tags and keep that in sync even when the tags are updated in the UI.
 

@@ -496,7 +496,7 @@ def _set_file_timestamps(file: File) -> None:
     """Set file times on save.
 
     Raises:
-        ValueError: If the file has now touch timestamp.
+        ValueError: If the file has no touch timestamp.
         OSError: If setting the file timestamps fails.
     """
     filepath = file.filename

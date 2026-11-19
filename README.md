@@ -27,8 +27,8 @@ The plugin adds the following variables and ID3 tags:
 | `produced` | `TPRO` |
 | `radiostationname` | `TRSN` |
 | `radiostationowner` | `TRSO` |
-| `~reldirname` | - |
-| `~filename_and_extension` | - |
+| `_reldirname` | - |
+| `_filename_and_extension` | - |
 
 > [!TIP]
 > The rather uncommon tags related to internet radio stations can be used to

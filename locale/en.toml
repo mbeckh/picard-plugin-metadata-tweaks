@@ -29,7 +29,7 @@
 "options.file_set_created_from" = "Name of variable to use for file created time"
 "options.file_set_modified" = "Set file last modified time"
 "options.file_set_modified_from" = "Name of variable to use for file last modified time"
-"options.metadata_set_timestamp" = "Set current tagging timestamp to metadate variable"
+"options.metadata_set_timestamp" = "Set current tagging timestamp to metadata variable"
 "options.metadata_set_timestamp_to" = "Name of metadata variable for tagging timestamp"
 "options.file_touch" = "Encode update timestamp in file times for backup tools"
 
