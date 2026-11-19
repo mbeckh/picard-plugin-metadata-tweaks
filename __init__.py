@@ -251,8 +251,8 @@ def _monkey_File_update(
         if not set_timestamp_to:
             return False
 
-        # Update timestamp
-        timestamp = datetime.now(UTC).isoformat(sep=' ', timespec='seconds')
+        # Update timestamp in UTC but without TZ info (according to spec, ID3v2 is UTC but does not specify timezone)
+        timestamp = datetime.now(UTC).replace(tzinfo=None).isoformat(sep=' ', timespec='seconds')
         self.metadata[set_timestamp_to] = timestamp
 
         # file times might depend on tagging date
