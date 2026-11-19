@@ -106,4 +106,5 @@ def disable() -> None:
     global _api, _enabled
 
     _enabled = False
+    monkey.unpatch_module(__name__)
     del _api
