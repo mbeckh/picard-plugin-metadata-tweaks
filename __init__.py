@@ -32,7 +32,6 @@ from typing import (
 
 from picard.const.sys import IS_WIN
 from picard.coverart.providers import CoverArtProviderLocal
-from picard.file import FileIdentity
 from picard.metadata import MultiMetadataProxy, _changed_score  # ruff: ignore[import-private-name]
 from picard.plugin3.api import (
     File,
@@ -283,7 +282,7 @@ def _monkey_File_update(
 
         return True
 
-    wrapped(self, signal and False, update_selection and False)
+    wrapped(self, signal, update_selection)
 
     if self.state == File.State.CHANGED and (update_timestamp() or signal):
         self.update_item(update_selection=update_selection)
@@ -344,14 +343,6 @@ def _monkey_Tagger_save(
                 cast('_TimestampedFile', file)._mt_timestamp = now
 
     wrapped(self, objects)
-
-    if files:
-        with _tagger_lock:
-            for file in files:
-                if not hasattr(file, '_mt_timestamp'):
-                    _api.logger.error("Timestamp not set for file: %r", file)
-                else:
-                    del cast('_TimestampedFile', file)._mt_timestamp
 
 
 #
@@ -515,6 +506,9 @@ def _set_file_timestamps(file: File) -> None:
         if touch_timestamp:
             _set_file_times(filepath, int(st.st_birthtime), int(st.st_mtime), touch_timestamp)
     else:
+        # update once more - might have been changed by other plugins
+        _save_file_times_to_metadata(metadata)
+
         set_created = IS_WIN and plugin_config['file_set_created']
         set_modified = plugin_config['file_set_modified']
 
@@ -529,8 +523,11 @@ def _set_file_timestamps(file: File) -> None:
 
             _set_file_times(filepath, created_epoch, modified_epoch, touch_timestamp)
 
-    file._file_identity = FileIdentity(filepath)
-    file._update_filesystem_metadata(file.orig_metadata)
+    # read back new file metadata
+    fs_metadata = Metadata()
+    file._update_filesystem_metadata(fs_metadata)
+    file.orig_metadata.update(fs_metadata)
+    file.metadata.update(fs_metadata)
 
 
 # Rename cover
@@ -637,6 +634,12 @@ def _file_post_save_processor(_api: PluginApi, file: File) -> None:
     """Update timestamps after saving."""
     _set_file_timestamps(file)
     _set_cover_timestamps(file)
+
+    with _tagger_lock:
+        if not hasattr(file, '_mt_timestamp'):
+            _api.logger.error("Timestamp not set for file: %r", file)
+        else:
+            del cast('_TimestampedFile', file)._mt_timestamp
 
 
 def enable(api: PluginApi) -> None:
