@@ -42,7 +42,7 @@
 "qt.MetadataTweaksOptionsPage.metadata_script.label" = "Run script after update:"
 "qt.MetadataTweaksOptionsPage.file_set_created.label" = "Set file created date to value of tag:"
 "qt.MetadataTweaksOptionsPage.file_set_modified.label" = "Set file modified date to value of tag:"
-"qt.MetadataTweaksOptionsPage.file_touch.label" = "Touch file dates on save"
+"qt.MetadataTweaksOptionsPage.file_touch.label" = "Encode update timestamp in file times"
 "qt.MetadataTweaksOptionsPage.variables_show.label" = "Show these hidden variables in the UI:"
 "qt.MetadataTweaksOptionsPage.variables_compare.label" = "Differences in selected variables are considered changes"
 
