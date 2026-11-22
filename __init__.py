@@ -118,15 +118,12 @@ def _monkey_Metadata_compare_weighted(  # ruff: ignore[too-many-positional-argum
     """
     parts = wrapped(self, store_a, store_b, ignored, deleted_a, deleted_b, penalize_removed)
     if _enabled:
-        plugin_config = _api.plugin_config
-        compare = plugin_config['variables_compare']
-        if compare:
-            for name in options.get_all_additional_variables():
-                if name in store_a or name in store_b:
-                    sa = store_a.get(name)
-                    sb = store_b.get(name)
-                    if sa != sb:
-                        parts.append((_changed_score(name, sa, sb), self._CHANGE_DEFAULT_WEIGHT))
+        for name in options.with_system_variables(set('~filepath')):
+            if name in store_a or name in store_b:
+                sa = store_a.get(name)
+                sb = store_b.get(name)
+                if sa != sb:
+                    parts.append((_changed_score(name, sa, sb), self._CHANGE_DEFAULT_WEIGHT))
 
     return parts
 
@@ -138,10 +135,7 @@ def _monkey_File_tags_to_update(
     """Yield additional names which are normally left out for comparison."""
     yield from wrapped(self, ignored_tags)
     if _enabled:
-        plugin_config = _api.plugin_config
-        compare = plugin_config['variables_compare']
-        if compare:
-            yield from options.get_all_additional_variables()
+        yield from options.with_system_variables()
 
 
 def _save_file_times_to_metadata(metadata: Metadata | MultiMetadataProxy) -> None:
@@ -720,15 +714,6 @@ def enable(api: PluginApi) -> None:
             '~reldirname',
         ],
         title=api.tr('options.variables_show', "Names of hidden variables to show in the metadata box"),
-        in_profile=True,
-    )
-
-    api.plugin_config.register_option(
-        'variables_compare',
-        default=False,
-        title=api.tr(
-            'options.variables_compare', "Differences in selected variables are considered changes of metadata"
-        ),
         in_profile=True,
     )
 

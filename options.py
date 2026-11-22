@@ -51,8 +51,8 @@ class _EnhancedTagListDelegate(Protocol):
     _mt_completions: Iterable[str]
 
 
-def get_all_additional_variables(names: Iterable[str] | None = None) -> set[str]:
-    """Get all variables for the UI including pre-defined ones.
+def with_system_variables(names: Iterable[str] | None = None) -> set[str]:
+    """Adds variables required by plugin features.
 
     Args:
         names: A list of variable names, if empty, the list configured in the plugin is used.
@@ -61,17 +61,15 @@ def get_all_additional_variables(names: Iterable[str] | None = None) -> set[str]
         A set of all variables that should be treated like tags.
     """
     plugin_config = _api.plugin_config
-    if names:
-        additional_names = set(names)
-    else:
+    if names is None:
         additional_names = set(plugin_config['variables_show'])
+    else:
+        additional_names = set(names)
 
     if plugin_config['file_set_created']:
         additional_names.add('~file_created_timestamp')
     if plugin_config['file_set_modified']:
         additional_names.add('~file_modified_timestamp')
-    # length and filepath are always added by Picard
-    additional_names.update(('~length', '~filepath'))
 
     return additional_names
 
@@ -130,7 +128,6 @@ class MetadataTweaksOptionsPage(OptionsPage):
         'file_set_modified_from': {'widgets': ['file_set_modified_from']},
         'file_touch': {'widgets': ['file_touch']},
         'variables_show': {'widgets': ['variables_show']},
-        'variables_compare': {'widgets': ['variables_compare']},
     }
 
     @override
@@ -183,7 +180,6 @@ class MetadataTweaksOptionsPage(OptionsPage):
 
         self.ui.variables_show.update(plugin_config['variables_show'])
         self.ui.variables_show.set_user_sortable(False)
-        self.ui.variables_compare.setChecked(plugin_config['variables_compare'])
 
         self.ui.metadata_set_timestamp_to.setEnabled(self.ui.metadata_set_timestamp.isChecked())
 
@@ -224,7 +220,6 @@ class MetadataTweaksOptionsPage(OptionsPage):
         plugin_config['file_set_modified_from'] = self.ui.file_set_modified_from.currentText()
         plugin_config['file_touch'] = self.ui.file_touch.isChecked()
         plugin_config['variables_show'] = list(self.ui.variables_show.tags)
-        plugin_config['variables_compare'] = self.ui.variables_compare.isChecked()
 
     def _update_file_options(self, source: QtWidgets.QCheckBox) -> None:
         self.ui.file_set_created.setEnabled(IS_WIN and not source.isChecked())
@@ -244,7 +239,7 @@ class MetadataTweaksOptionsPage(OptionsPage):
         delegate = cast('AutocompleteItemDelegate', top_tags_page.ui.top_tags_list.ui.tag_list_view.itemDelegate())
         completions = cast('_EnhancedTagListDelegate', delegate)._mt_completions
         # add current selection and default
-        additional_names = get_all_additional_variables(self.ui.variables_show.tags)
+        additional_names = with_system_variables(self.ui.variables_show.tags)
         delegate._completions = sorted({*completions, *map(tag_for_ui, additional_names)})
 
 
@@ -288,7 +283,7 @@ def _monkey_InterfaceTopTagsOptionsPage_init(
         completions = delegate._completions
         cast('_EnhancedTagListDelegate', delegate)._mt_completions = completions
         # add current selection and default
-        additional_names = get_all_additional_variables(_api.plugin_config['variables_show'])
+        additional_names = with_system_variables()
         delegate._completions = sorted({*completions, *map(tag_for_ui, additional_names)})
 
 

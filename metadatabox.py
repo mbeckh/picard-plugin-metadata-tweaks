@@ -75,7 +75,7 @@ def _monkey_MetadataBox_add_files_to_tag_diff(  # ruff: ignore[too-many-position
         orig_metadata = file.orig_metadata
         new_metadata = file.metadata
 
-        for name in options.get_all_additional_variables() & (set(orig_metadata) | set(new_metadata)):
+        for name in options.with_system_variables() & (set(orig_metadata) | set(new_metadata)):
             if name in tag_diff.status:  # TagDiff.tag_names is not yet set
                 continue
 
