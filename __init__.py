@@ -30,6 +30,8 @@ from typing import (
     cast,
 )
 
+from PyQt6 import QtCore
+
 from picard.const.sys import IS_WIN
 from picard.coverart.providers import CoverArtProviderLocal
 from picard.metadata import MultiMetadataProxy, _changed_score  # ruff: ignore[import-private-name]
@@ -48,6 +50,7 @@ from picard.util import (
     IterableFiles,
     iter_files_from_objects,
 )
+from picard.util.qt import ReadWriteLockContext
 
 from . import datefunctions, extra_tags, metadatabox, monkey, options
 
@@ -308,6 +311,24 @@ def _monkey_Track_update(
                 signal = True
 
     wrapped(self, signal)
+
+
+if TYPE_CHECKING:
+
+    class _MonkeyReadWriteLockContext(ReadWriteLockContext):
+        """Helper for type checking."""
+
+        _ReadWriteLockContext__lock: QtCore.QReadWriteLock
+
+
+@monkey.patch(ReadWriteLockContext, ReadWriteLockContext.__init__)
+def _monkey_ReadWriteLockContext_init(
+    _wrapped: Callable[[ReadWriteLockContext], None], self: ReadWriteLockContext
+) -> None:
+    """Use a reentrant lock to fix a deadlock on update."""
+    cast('_MonkeyReadWriteLockContext', self)._ReadWriteLockContext__lock = QtCore.QReadWriteLock(
+        recursionMode=QtCore.QReadWriteLock.RecursionMode.Recursive
+    )
 
 
 #
